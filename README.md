@@ -13,7 +13,11 @@ mvn clean install -DskipTests
 - maven 3.5.4
 - gradle 4.4.1  
 
-**tips：** 这里可以提前下载好 gradle相关的压缩包放在 ~/.gradle/wrapper/dists/\*\*/\*\*下
+**tips：** 这里可以提前下载好 gradle相关的压缩包放在：
+ ```
+ ~/.gradle/wrapper/dists/**/**
+ ```
+ 
 
 
 [gradle下载地址官网](https://services.gradle.org/distributions/)  
