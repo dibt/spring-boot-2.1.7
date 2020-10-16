@@ -12,6 +12,7 @@ mvn clean install -DskipTests
 - idea 2018.1  
 - maven 3.5.4
 - gradle 4.4.1  
+
 **tips：** 这里可以提前下载好 gradle相关的压缩包放在 ~/.gradle/wrapper/dists/\*\*/\*\*下
 
 
