@@ -72,6 +72,10 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
  * @see ConditionalOnClass
  * @see AutoConfigureAfter
  * @see SpringBootApplication
+ * 借助 @Import 将所有符合自动配置条件的 bean 定义加载到IoC容器
+ * 从 classpath 中搜寻所有的 META-INF/spring.factories 配置文件，并将其中org.springframework.boot.autoconfigure
+ * .EnableutoConfiguration 对应的配置项通过反射（Java Refletion）实例化为对应的标注了 @Configuration 的 JavaConfig
+ * 形式的IoC容器配置类，然后汇总并加载到IoC容器。
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

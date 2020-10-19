@@ -42,6 +42,12 @@ import org.springframework.core.annotation.AliasFor;
  * @author Phillip Webb
  * @author Stephane Nicoll
  * @since 1.2.0
+ * 即 @SpringBootApplication = (默认属性)@Configuration + @EnableAutoConfiguration + @ComponentScan
+ * @ComponentScan 的功能其实就是自动扫描并加载符合条件的组件（比如 @Component 和 @Repository 等）或者 bean 定义，
+ * 最终将这些 bean 定义加载到IoC容器中。可以通过 basePackages 等属性来进行更细粒度的定制 @ComponentScan 自动扫描的范围，
+ * 如果不指定，则 Spring 框架实现默认会从声明 @ComponentScan 所在类的 package 进行扫描。
+ *
+ * 注：所以 SpringBoot 的启动类最好是放在root package下，因为默认不指定 basePackages。
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

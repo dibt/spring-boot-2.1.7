@@ -88,6 +88,13 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 
 	private ResourceLoader resourceLoader;
 
+	
+	/**
+	 * selectImports -> getAutoConfigurationEntry -> getCandidateConfigurations ->
+	 * SpringFactoriesLoader.loadFactoryNames
+	 * 主要是借助于 Spring 框架原有的一个工具类：SpringFactoriesLoader 的支持
+	 * SpringFactoriesLoader 属于 Spring 框架私有的一种扩展方案，其主要功能就是从指定的配置文件 META-INF/spring.factories 加载配置
+	 */
 	@Override
 	public String[] selectImports(AnnotationMetadata annotationMetadata) {
 		if (!isEnabled(annotationMetadata)) {
@@ -166,6 +173,8 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 	 * @param attributes the {@link #getAttributes(AnnotationMetadata) annotation
 	 * attributes}
 	 * @return a list of candidate configurations
+	 * 更多是提供一种配置查找的功能支持，即根据 @EnableAutoConfiguration 的完整类名 org.springframework.boot.autoconfigure
+	 * .EnableAutoConfiguration 作为查找的 Key，获取对应的一组 @Configuration 类。
 	 */
 	protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) {
 		List<String> configurations = SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(),

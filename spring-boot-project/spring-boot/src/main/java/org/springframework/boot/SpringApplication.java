@@ -259,15 +259,21 @@ public class SpringApplication {
 	 * @param primarySources the primary bean sources
 	 * @see #run(Class, String[])
 	 * @see #setSources(Set)
+	 * 创建 SpringApplication 对象的时候会做一些事情
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
 		this.resourceLoader = resourceLoader;
 		Assert.notNull(primarySources, "PrimarySources must not be null");
 		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
+		// 根据 classpath 里面是否存在某个特征类 org.springframework.web.context.ConfigurableWebApplicationContext
+		// 来决定是否应该创建一个为Web应用使用的 ApplicationContext 类型。
 		this.webApplicationType = WebApplicationType.deduceFromClasspath();
+		// 使用 SpringFactoriesLoader 在应用的 classpath 中查找并加载所有可用的 ApplicationContextInitializer。
 		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
+		// 使用 SpringFactoriesLoader 在应用的 classpath 中查找并加载所有可用的 ApplicationListener。
 		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
+		// 推断并设置main方法的定义类。
 		this.mainApplicationClass = deduceMainApplicationClass();
 	}
 
@@ -298,17 +304,23 @@ public class SpringApplication {
 		ConfigurableApplicationContext context = null;
 		Collection<SpringBootExceptionReporter> exceptionReporters = new ArrayList<>();
 		configureHeadlessProperty();
+		// 遍历执行所有通过 SpringFactoriesLoader 可以查找到并加载的 SpringApplicationRunListener,调用它们的 starting() 方法
 		SpringApplicationRunListeners listeners = getRunListeners(args);
 		listeners.starting();
 		try {
 			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+			// 创建并配置当前 Spring Boot 应用将要使用的 Environment（包括配置要使用的 PropertySource 以及 Profile）
 			ConfigurableEnvironment environment = prepareEnvironment(listeners, applicationArguments);
 			configureIgnoreBeanInfo(environment);
+			// 判断 SpringApplication 的 showBanner 属性是否设置为true，为 true 则打印 banner。
 			Banner printedBanner = printBanner(environment);
+			// 为 SpringBoot 应用创建 ApplicationContext
 			context = createApplicationContext();
 			exceptionReporters = getSpringFactoriesInstances(SpringBootExceptionReporter.class,
 					new Class[] { ConfigurableApplicationContext.class }, context);
+			// 为 ApplicationContext 进行属性设置
 			prepareContext(context, environment, listeners, applicationArguments, printedBanner);
+			// 调用 ApplicationContext 的 refresh() 方法
 			refreshContext(context);
 			afterRefresh(context, applicationArguments);
 			stopWatch.stop();
@@ -316,6 +328,7 @@ public class SpringApplication {
 				new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
 			}
 			listeners.started(context);
+			// 查找当前 ApplicationContext 中是否注册有 Runner，如果有，则遍历执行它们
 			callRunners(context, applicationArguments);
 		}
 		catch (Throwable ex) {
@@ -338,6 +351,7 @@ public class SpringApplication {
 		// Create and configure the environment
 		ConfigurableEnvironment environment = getOrCreateEnvironment();
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
+		// 遍历调用所有 SpringApplicationRunListener 的 environmentPrepared() 的方法
 		listeners.environmentPrepared(environment);
 		bindToSpringApplication(environment);
 		if (!this.isCustomEnvironment) {
@@ -361,9 +375,12 @@ public class SpringApplication {
 
 	private void prepareContext(ConfigurableApplicationContext context, ConfigurableEnvironment environment,
 			SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
+		// 为 ApplicationContext 设置 Environment
 		context.setEnvironment(environment);
 		postProcessApplicationContext(context);
+		// 遍历所有可用的 ApplicationContextInitializer，调用其 initialize() 方法
 		applyInitializers(context);
+		// 遍历调用所有 SpringApplicationRunListener 的 contextPrepared() 方法
 		listeners.contextPrepared(context);
 		if (this.logStartupInfo) {
 			logStartupInfo(context.getParent() == null);
@@ -382,7 +399,9 @@ public class SpringApplication {
 		// Load the sources
 		Set<Object> sources = getAllSources();
 		Assert.notEmpty(sources, "Sources must not be empty");
+		// 将之前通过 @EnableAutoConfiguration 获取的所有配置以及其他形式的IoC容器配置加载到已经准备完毕的 ApplicationContext
 		load(context, sources.toArray(new Object[0]));
+		// 遍历调用所有 SpringApplicationRunListener 的 contextLoaded() 方法
 		listeners.contextLoaded(context);
 	}
 
@@ -1209,6 +1228,7 @@ public class SpringApplication {
 	 * @param primarySources the primary sources to load
 	 * @param args the application arguments (usually passed from a Java main method)
 	 * @return the running {@link ApplicationContext}
+	 * SpringApplication 执行流程入口
 	 */
 	public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
 		return new SpringApplication(primarySources).run(args);

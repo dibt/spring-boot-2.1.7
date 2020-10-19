@@ -36,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Phillip Webb
  * @since 1.4.0
+ * JavaConfig 形式的 Spring Ioc 容器的配置类 @Configuration
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
