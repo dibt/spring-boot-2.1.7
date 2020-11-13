@@ -4,3 +4,5 @@
 
 
 [为什么使用B+Tree](https://juejin.im/post/6844904175441018887)
+
+[分布式事务](https://mp.weixin.qq.com/s/7RrfMA0QKghIAX7y7Yjf_A)
