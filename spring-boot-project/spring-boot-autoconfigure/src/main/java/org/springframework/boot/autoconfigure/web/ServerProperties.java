@@ -58,6 +58,7 @@ import org.springframework.util.unit.DataSize;
  * @author Chentao Qu
  * @since 1.0.0
  */
+// 是从配置文件中绑定属性到对应的bean上
 @ConfigurationProperties(prefix = "server", ignoreUnknownFields = true)
 public class ServerProperties {
 
